@@ -1,0 +1,69 @@
+const mongoose = require("mongoose")
+const { boolean } = require("webidl-conversions")
+const AdminOlaSchema = new mongoose.Schema({
+    FirstName:{
+        type:String,
+        required:true,
+        unique:true
+    },
+    LastName:{
+        type:String,
+        required:true
+    },
+    Address:{
+        type:String,
+        required:true,
+    },
+    PhoneNo:{
+        type:Number,
+        required:true,
+        unique:true
+    },
+    Email:{
+        type:String,
+        required:true,
+        unique:true
+    },
+    Password:{
+        type:String,
+        required:true,
+        unique:true,
+        max:10,
+        min:5
+    },
+    PositionInTheCompany:{
+        type:String,
+        required:true
+    },
+    TotalLeave:{
+        type:Number,
+        default:0,
+        max:15
+    },
+    JoiningTime:{
+        type:Date,
+        required:true,
+    },
+    LeavingTime:{
+        type:Date,
+        required:true,
+    },
+    IsInLeave:{
+        type:Boolean,
+        default:false
+    },
+    HasLeftCompany:{
+        type:Boolean,
+        default:false
+    },
+    CustomerHandeled:{
+        type:Number,
+        default:0
+    },
+    HowManyRides:{
+        type:Number,
+        default:0
+    }
+},{timestamps:true})
+
+module.exports = mongoose.model("AdminOla",AdminOlaSchema)
