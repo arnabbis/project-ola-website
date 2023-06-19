@@ -7,8 +7,8 @@ const driverController = require("../controller/driverController");
 
 // ADMIN API:
 router.post("/createAdmin",adminController.createAdmin)
-router.post("/login",adminController.login)
-router.get
+// router.post("/login",adminController.login)
+// router.get
 // USER API:
 // DRIVER API:
 

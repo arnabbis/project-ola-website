@@ -3,8 +3,7 @@ const { boolean } = require("webidl-conversions")
 const AdminOlaSchema = new mongoose.Schema({
     FirstName:{
         type:String,
-        required:true,
-        unique:true
+        required:true
     },
     LastName:{
         type:String,
@@ -51,6 +50,10 @@ const AdminOlaSchema = new mongoose.Schema({
     IsInLeave:{
         type:Boolean,
         default:false
+    },
+    Leave:{
+        type: String,
+        enum: ['sickLeave', 'earnedLeave', 'CompansatoryLeave']
     },
     HasLeftCompany:{
         type:Boolean,
