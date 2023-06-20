@@ -36,16 +36,15 @@ const AdminOlaSchema = new mongoose.Schema({
     },
     TotalLeave:{
         type:Number,
-        default:0,
-        max:15
+        default:15
     },
     JoiningTime:{
         type:Date,
-        required:true,
+        default:Date.now()
     },
     LeavingTime:{
         type:Date,
-        required:true,
+        default:Date.now()
     },
     IsInLeave:{
         type:Boolean,
@@ -53,7 +52,7 @@ const AdminOlaSchema = new mongoose.Schema({
     },
     Leave:{
         type: String,
-        enum: ['sickLeave', 'earnedLeave', 'CompansatoryLeave']
+        enum: ['sickLeave', 'earnedLeave', 'CompansatoryLeave'],
     },
     HasLeftCompany:{
         type:Boolean,
@@ -69,4 +68,4 @@ const AdminOlaSchema = new mongoose.Schema({
     }
 },{timestamps:true})
 
-module.exports = mongoose.model("AdminOla",AdminOlaSchema)
+module.exports = mongoose.model("Admin",AdminOlaSchema)
