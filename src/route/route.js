@@ -7,7 +7,7 @@ const driverController = require("../controller/driverController");
 
 // ADMIN API:
 router.post("/createAdmin",adminController.createAdmin)
-// router.post("/login",adminController.login)
+router.post("/login",adminController.login)
 router.post("/leaveGrant",adminController.applyLeave)
 // USER API:
 // DRIVER API:

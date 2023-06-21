@@ -2,6 +2,7 @@ const admin = require("../model/adminModel");
 const bycrypt = require("bcrypt");
 const {emit}=require("../model/userModel");
 const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
 
 // CREATE (POST) :
 const isValid = (value) => {
@@ -130,5 +131,44 @@ const applyLeave = async function (req, res) {
     }
 }
 
+const login = async function (req, res) {
+    try{
+        const data = req.body;
+        if(Object.keys(data).length === 0){
+            return res.status(400).send({ message: "please provide data" });
+        }
+        const {Email,Password} = data;
+        if(!isValid(Email)){
+            return res.status(400).send({ message: "please provide Email" });
+        }
+        const findEmail = await admin.findOne({Email:Email});
+        if(!findEmail){
+            return res.status(400).send({ message: "Email not found" });
+        }
+        if(!isValid(Password)){
+           return res.status(400).send({ message: "please provide Password" });
+        }
+        bycrypt.compare(Password,findEmail.Password,function(err,result){
+            if(result){
+                let token = jwt.sign({
+                    adminId:findEmail._id,
+                    iat:Math.floor(Date.now()/1000),
+                    exp:Math.floor(Date.now()/1000)+10*60*60
+                },"arnab")
+                const data = {
+                    adminId:findEmail._id,
+                    token:token
+                }
+                return res.status(200).send({ message: "login successfully",token:data });
+            }else{
+                return res.status(400).send({ message: "Password not match" });
+            }
+        })
+    }catch(err){
+        return res.status(500).send({ message: "something went wrong", err: err.message });
+    }
+}
+
 module.exports.createAdmin = createAdmin;
 module.exports.applyLeave = applyLeave;
+module.exports.login = login;
