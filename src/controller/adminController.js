@@ -169,6 +169,19 @@ const login = async function (req, res) {
     }
 }
 
+const getAllAdmin = async function (req, res) {
+    try{
+        const getData = await admin.find();
+        if(!getData){
+            return res.status(400).send({ message: "data not found" });
+        }else{
+            return res.status(200).send({ message: "data found",data:getData });
+        }
+    }catch(err){
+        return res.status(500).send({ message: "something went wrong", err: err.message });
+    }
+}
 module.exports.createAdmin = createAdmin;
 module.exports.applyLeave = applyLeave;
 module.exports.login = login;
+module.exports.getAllAdmin = getAllAdmin;
