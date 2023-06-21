@@ -1,6 +1,7 @@
 const admin = require("../model/adminModel");
 const bycrypt = require("bcrypt");
 const {emit}=require("../model/userModel");
+const mongoose = require("mongoose");
 
 // CREATE (POST) :
 const isValid = (value) => {
@@ -10,6 +11,10 @@ const isValid = (value) => {
         return false
     else
         return true
+}
+
+const isValidobjectId = (objectId) => {
+    return mongoose.Types.ObjectId.isValid(objectId)
 }
 const createAdmin = async function (req, res) {
   try {
@@ -75,6 +80,7 @@ const createAdmin = async function (req, res) {
     if (Leave && !leave.includes(Leave)) {
         return res.status(400).send({ message: "please provide valid Leave" });
       }
+     
     let createUser = await admin.create(data)
     return res.status(200).send({ message: "admin created successfully", data: createUser });
   } catch (err) {
@@ -82,4 +88,47 @@ const createAdmin = async function (req, res) {
   }
 };
 
+const applyLeave = async function (req, res) {
+    try{
+        const data = req.body;
+        const {Leave,adminId,TotalLeave} = data;
+        const leave = ["sickLeave", "earnedLeave", "CompansatoryLeave"];
+        if (Leave && !leave.includes(Leave)) {
+            return res.status(400).send({ message: "please provide valid Leave" });
+          }
+        if(!isValid(adminId)){
+            return res.status(400).send({ message: "please provide adminId" });
+        }
+        const findAdminId = await admin.findById(adminId);
+        if(!findAdminId){
+            return res.status(400).send({ message: "adminId not found" });
+        }
+        if(!isValidobjectId(adminId)){
+            return res.status(400).send({ message: "please provide valid adminId" });
+        }
+        if(!isValid(TotalLeave)){
+            return res.status(400).send({ message: "please provide TotalLeave" });
+        }
+        if (TotalLeave && TotalLeave <= 0) {
+            return res.status(400).send({ message: "TotalLeave should be a positive number" });
+          }
+      
+          if (TotalLeave && TotalLeave > findAdminId.TotalLeave) {
+            return res.status(400).send({ message: "Insufficient TotalLeave" });
+          }
+      
+          findAdminId.TotalLeave -= TotalLeave;
+          findAdminId.IsInLeave = true;
+          findAdminId.JoiningTime = Date.now()*0;
+          findAdminId.LeavingTime = Date.now()*0;
+
+    await findAdminId.save(); // Save the updated admin document
+
+    return res.status(200).send({ message: "Leave applied successfully" });
+    }catch(err){
+        return res.status(500).send({ message: "something went wrong", err: err.message });
+    }
+}
+
 module.exports.createAdmin = createAdmin;
+module.exports.applyLeave = applyLeave;

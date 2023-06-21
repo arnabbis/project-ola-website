@@ -1,71 +1,76 @@
-const mongoose = require("mongoose")
-const { boolean } = require("webidl-conversions")
-const AdminOlaSchema = new mongoose.Schema({
-    FirstName:{
-        type:String,
-        required:true
+const mongoose = require("mongoose");
+const { boolean } = require("webidl-conversions");
+const AdminOlaSchema = new mongoose.Schema(
+  {
+    FirstName: {
+      type: String,
+      required: true,
     },
-    LastName:{
-        type:String,
-        required:true
+    LastName: {
+      type: String,
+      required: true,
     },
-    Address:{
-        type:String,
-        required:true,
+    Address: {
+      type: String,
+      required: true,
     },
-    PhoneNo:{
-        type:Number,
-        required:true,
-        unique:true
+    PhoneNo: {
+      type: Number,
+      required: true,
+      unique: true,
     },
-    Email:{
-        type:String,
-        required:true,
-        unique:true
+    Email: {
+      type: String,
+      required: true,
+      unique: true,
     },
-    Password:{
-        type:String,
-        required:true,
-        unique:true,
-        max:10,
-        min:5
+    Password: {
+      type: String,
+      required: true,
+      unique: true,
+      max: 10,
+      min: 5,
     },
-    PositionInTheCompany:{
-        type:String,
-        required:true
+    PositionInTheCompany: {
+      type: String,
+      required: true,
     },
-    TotalLeave:{
-        type:Number,
-        default:15
+    TotalLeave: {
+      type: Number,
+      default: 15,
+      min: 0,
+      max: 15,
     },
-    JoiningTime:{
-        type:Date,
-        default:Date.now()
+    JoiningTime: {
+        type: Date,
+        default: Date.now(),
+      },
+      LeavingTime: {
+        type: Date,
+        default: Date.now(),
     },
-    LeavingTime:{
-        type:Date,
-        default:Date.now()
+    IsInLeave: {
+      type: Boolean,
+      default: false,
     },
-    IsInLeave:{
-        type:Boolean,
-        default:false
+    Leave: {
+      type: String,
+      enum: ["sickLeave", "earnedLeave", "CompansatoryLeave"],
     },
-    Leave:{
-        type: String,
-        enum: ['sickLeave', 'earnedLeave', 'CompansatoryLeave'],
+    HasLeftCompany: {
+      type: Boolean,
+      default: false,
     },
-    HasLeftCompany:{
-        type:Boolean,
-        default:false
+    CustomerHandeled: {
+      type: Number,
+      default: 0,
     },
-    CustomerHandeled:{
-        type:Number,
-        default:0
+    HowManyRides: {
+      type: Number,
+      default: 0,
     },
-    HowManyRides:{
-        type:Number,
-        default:0
-    }
-},{timestamps:true})
+  },
+  { timestamps: true }
+);
 
-module.exports = mongoose.model("Admin",AdminOlaSchema)
+module.exports = mongoose.model("Admin", AdminOlaSchema);
