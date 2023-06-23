@@ -14,6 +14,10 @@ const isValid = (value) => {
         return true
 }
 
+const objectIdRegex = /^[0-9a-fA-F]{24}$/;
+function isValidObjectIdRegex(objectId) {
+    return objectIdRegex.test(objectId);
+  }
 const isValidobjectId = (objectId) => {
     return mongoose.Types.ObjectId.isValid(objectId)
 }
@@ -181,7 +185,32 @@ const getAllAdmin = async function (req, res) {
         return res.status(500).send({ message: "something went wrong", err: err.message });
     }
 }
+
+const deleteAdmin = async function (req, res) {
+    try{
+        const adminId = req.params.adminId.trim();
+        if(!isValid(adminId)){
+            return res.status(400).send({ message: "please provide adminId" });
+        }
+        const findAdminId = await admin.findOne({_id:adminId,HasLeftCompany:false})
+        if(!findAdminId){
+            return res.status(400).send({ message: "adminId not found or already deleted" });
+        }
+        if(!objectIdRegex.test(adminId)){
+            return res.status(400).send({ message: "please provide valid adminId" });
+        }
+        if(findAdminId.HasLeftCompany === true){
+            return res.status(400).send({ message: "admin already deleted" });
+        }
+        const deleteAdmin = await admin.findByIdAndUpdate(adminId,{HasLeftCompany:true},{new:true});      
+        return res.status(200).send({ message: "admin deleted successfully", data: deleteAdmin });
+    }catch(err){
+        return res.status(500).send({ message: "something went wrong", err: err.message });
+    }
+}
+
 module.exports.createAdmin = createAdmin;
 module.exports.applyLeave = applyLeave;
 module.exports.login = login;
 module.exports.getAllAdmin = getAllAdmin;
+module.exports.deleteAdmin = deleteAdmin;
