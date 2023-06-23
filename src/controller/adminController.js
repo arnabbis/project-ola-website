@@ -13,6 +13,10 @@ const isValid = (value) => {
     else
         return true
 }
+const isUpdate = function(value) {
+    if (typeof(value) === "string" && (value).trim().length === 0) { return false }
+    return true
+}
 
 const isValidobjectId = (objectId) => {
     return mongoose.Types.ObjectId.isValid(objectId)
@@ -181,7 +185,68 @@ const getAllAdmin = async function (req, res) {
         return res.status(500).send({ message: "something went wrong", err: err.message });
     }
 }
+const updateAdmin = async function (req, res) {
+    try{
+        const data = req.body;
+        const adminId = req.params.adminId.trim();
+        const {FirstName,LastName,PhoneNo,Email,Password,PositionInTheCompany,Address} = data;
+        if(Object.keys(data).length === 0){
+            return res.status(400).send({ message: "please provide data" });
+        }
+        if(!isValid(adminId)){
+            return res.status(400).send({ message: "please provide adminId" });
+        }
+        const findAdminId = await admin.findById(adminId);
+        if(!findAdminId){
+            return res.status(400).send({ message: "adminId not found" });
+        }
+        if(!mongoose.Types.ObjectId.isValid(adminId)){
+            return res.status(400).send({ message: "please provide valid adminId" });
+        }
+        if(!isUpdate(FirstName)){
+            return res.status(400).send({ message: "please provide FirstName" });
+        }
+        if(!isUpdate(LastName)){
+            return res.status(400).send({ message: "please provide LastName" });
+        }
+        if(!isUpdate(PhoneNo)){
+            return res.status(400).send({ message: "please provide PhoneNo" });
+        }
+        const checEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+        if(!isUpdate(Email) && !checEmail.test(Email) ){
+            return res.status(400).send({ message: "please provide Email" });
+        }
+        const findDupEmail = await admin.findOne({Email:Email});
+        if(findDupEmail){
+            return res.status(400).send({ message: "Email already exist" });
+        }
+        const checkPhone = /^[6-9]\d{9}$/;
+        if(!isUpdate(PhoneNo) && !checkPhone.test(PhoneNo)){
+            return res.status(400).send({ message: "please provide PhoneNo" });
+        }
+        const findDupPhone = await admin.findOne({PhoneNo:PhoneNo});
+        if(findDupPhone){
+            return res.status(400).send({ message: "PhoneNo already exist" });
+        }
+        if(!isUpdate(Password) && Password.length<5 && Password.length>10){
+            return res.status(400).send({ message: "please provide valid Password" });
+        }
+        const salt = await bycrypt.genSalt(10);
+        data.Password = await bycrypt.hash(Password, salt);
+        if(!isUpdate(PositionInTheCompany)){
+            return res.status(400).send({ message: "please provide PositionInTheCompany" });
+        }
+        if(!isUpdate(Address)){
+            return res.status(400).send({ message: "please provide Address" });
+        }
+        const updateAdmin = await admin.findByIdAndUpdate(adminId,data,{new:true});
+        return res.status(200).send({ message: "admin updated successfully", data: updateAdmin });
+    }catch(err){
+        return res.status(500).send({ message: "something went wrong", err: err.message });
+    }
+}
 module.exports.createAdmin = createAdmin;
 module.exports.applyLeave = applyLeave;
 module.exports.login = login;
 module.exports.getAllAdmin = getAllAdmin;
+module.exports.updateAdmin = updateAdmin;
