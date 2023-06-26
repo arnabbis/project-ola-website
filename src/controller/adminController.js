@@ -126,6 +126,8 @@ const applyLeave = async function (req, res) {
           findAdminId.IsInLeave = true;
           findAdminId.JoiningTime = Date.now()*0;
           findAdminId.LeavingTime = Date.now()*0;
+          findAdminId.LeaveDate = Date.now();
+          findAdminId.Leave = Leave;
 
     await findAdminId.save(); // Save the updated admin document
 
@@ -209,8 +211,26 @@ const deleteAdmin = async function (req, res) {
     }
 }
 
+const getLeaveByAdmin = async function (req, res) {
+    const Leave = req.query.Leave;
+    if(Object.keys(Leave).length === 0){
+        return res.status(400).send({ message: "please provide Leave" });
+    }
+    const leave = ["sickLeave", "earnedLeave", "CompansatoryLeave"];
+    if (Leave && !leave.includes(Leave)) {
+        return res.status(400).send({ message: "please provide valid Leave" });
+      }
+    const getLeave = await admin.find({Leave:Leave});
+    if(!getLeave){
+        return res.status(400).send({ message: "Leave not found" });
+    }else{
+        return res.status(200).send({ message: "Leave found",data:getLeave });
+    }
+
+}
 module.exports.createAdmin = createAdmin;
 module.exports.applyLeave = applyLeave;
 module.exports.login = login;
 module.exports.getAllAdmin = getAllAdmin;
 module.exports.deleteAdmin = deleteAdmin;
+module.exports.getLeaveByAdmin = getLeaveByAdmin;
