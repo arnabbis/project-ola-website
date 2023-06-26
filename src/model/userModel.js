@@ -4,7 +4,6 @@ const UserOlaSchema = new mongoose.Schema({
     FirstName:{
         type:String,
         required:true,
-        unique:true
     },
     LastName:{
         type:String,
