@@ -62,6 +62,10 @@ const AdminOlaSchema = new mongoose.Schema(
       type:Date,
       default:0
     },
+    getleavedate: {
+      type: [Date],
+      default: [],
+    },
     HasLeftCompany: {
       type: Boolean,
       default: false,

@@ -128,6 +128,14 @@ const applyLeave = async function (req, res) {
           findAdminId.LeavingTime = Date.now()*0;
           findAdminId.LeaveDate = Date.now();
           findAdminId.Leave = Leave;
+          const leaveDate = new Date(findAdminId.LeaveDate.toISOString().split('T')[0]);
+          const leaveDateExists = findAdminId.getleavedate.some(date => {
+            return date.getTime() === leaveDate.getTime();
+          });
+          if (!leaveDateExists) {
+            // If the leaveDate is not in the array, add it
+            findAdminId.getleavedate.push(leaveDate);
+          }
 
     await findAdminId.save(); // Save the updated admin document
 
