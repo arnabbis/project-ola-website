@@ -11,6 +11,7 @@ router.post("/login",adminController.login)
 router.post("/leaveGrant",adminController.applyLeave)
 router.get("/getAllAdmin",adminController.getAllAdmin)
 router.delete("/deleteAdmin/:adminId",adminController.deleteAdmin)
+router.get("/getLeaveByAdmin",adminController.getLeaveByAdmin)
 // USER API:
 // DRIVER API:
 

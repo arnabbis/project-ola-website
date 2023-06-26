@@ -55,7 +55,12 @@ const AdminOlaSchema = new mongoose.Schema(
     },
     Leave: {
       type: String,
-      enum: ["sickLeave", "earnedLeave", "CompansatoryLeave"],
+      enum: ["sickLeave", "earnedLeave", "CompansatoryLeave","none"],
+      default:"none"
+    },
+    LeaveDate:{
+      type:Date,
+      default:0
     },
     HasLeftCompany: {
       type: Boolean,
