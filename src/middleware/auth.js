@@ -21,7 +21,7 @@ const authorisation = async function(req,res,next){
     if(!adminId) return res.status(400).send({status:false,msg:"adminId is not present in the params"})
     if(!ObjectId.isValid(adminId)) return res.status(401).send({status:false,msg:"adminId is not valid"})
     let admin = await adminModel.findById(adminId)
-    if(!admin) return res.status(400).send({status:false,msg:"admin with specific bookId"})
+    if(!admin) return res.status(400).send({status:false,msg:"admin with specific adminId is not present"})
     let token = req.headers["x-api-key"]
     let decodedToken = jsonwebtoken.verify(token, "arnab", {ignoreExpiration: true})
     if(admin._id != decodedToken.adminId) return res.status(401).send({status:false, msg:'You are not authorized to make the changes'})
